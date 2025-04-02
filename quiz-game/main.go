@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 )
 
 var (
@@ -42,20 +43,33 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	countCorrect, countTotal := 0, len(records)
 
-	for i, record := range records {
-		fmt.Printf("Problem #%d: %s = ", i+1, record[0])
+	timer := time.After(time.Duration(*limit) * time.Second)
 
-		scanner.Scan()
-		input := scanner.Text()
-		input = strings.TrimSpace(input)
-		input = strings.ToLower(input)
+	doneCh := make(chan struct{})
 
-		answer := strings.TrimSpace(record[1])
-		answer = strings.ToLower(answer)
+	go func() {
+		for i, record := range records {
+			fmt.Printf("Problem #%d: %s = ", i+1, record[0])
 
-		if answer == input {
-			countCorrect++
+			scanner.Scan()
+			input := scanner.Text()
+			input = strings.TrimSpace(input)
+			input = strings.ToLower(input)
+
+			answer := strings.TrimSpace(record[1])
+			answer = strings.ToLower(answer)
+
+			if answer == input {
+				countCorrect++
+			}
 		}
+		doneCh <- struct{}{}
+	}()
+
+	select {
+	case <-timer:
+		fmt.Println("\nTime out")
+	case <-doneCh:
 	}
 
 	fmt.Printf("Correct Answers is %d out of %d\n", countCorrect, countTotal)
