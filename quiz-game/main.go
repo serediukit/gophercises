@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	filePath = flag.String("filePath", "problems.csv", "The path to file where questions are containing")
+	filePath = flag.String("filepath", "problems.csv", "The path to file where questions are containing")
 	limit    = flag.Int("limit", 30, "The time in second that you will have to complete the quiz")
 	shuffle  = flag.Bool("shuffle", false, "If true - the questions will appear in random order")
 )
