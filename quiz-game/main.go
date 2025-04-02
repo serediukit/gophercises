@@ -5,6 +5,7 @@ import (
 	"encoding/csv"
 	"flag"
 	"fmt"
+	"math/rand"
 	"os"
 	"strings"
 	"time"
@@ -24,6 +25,13 @@ type question struct {
 
 func init() {
 	flag.Parse()
+}
+
+func shuffleQuestions(a []question) {
+	for i := range a {
+		j := rand.Intn(i + 1)
+		a[i], a[j] = a[j], a[i]
+	}
 }
 
 func main() {
@@ -56,6 +64,10 @@ func main() {
 			question: record[0],
 			answer:   strings.ToLower(strings.TrimSpace(record[1])),
 		}
+	}
+
+	if *shuffle {
+		shuffleQuestions(questions)
 	}
 
 	scanner := bufio.NewScanner(os.Stdin)
