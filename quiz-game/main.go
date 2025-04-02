@@ -34,11 +34,11 @@ func shuffleQuestions(a []question) {
 	}
 }
 
-func main() {
-	file, err := os.Open(*filePath)
+func newCsvReader(filepath string) [][]string {
+	file, err := os.Open(filepath)
 	if err != nil {
 		fmt.Println("Cannot read file:", err)
-		return
+		os.Exit(1)
 	}
 
 	defer func(file *os.File) {
@@ -54,8 +54,13 @@ func main() {
 	records, err := reader.ReadAll()
 	if err != nil {
 		fmt.Println("Cannot read csv file:", err)
-		return
+		os.Exit(1)
 	}
+
+	return records
+}
+
+func getQuestions(records [][]string) []question {
 
 	questions := make([]question, len(records))
 	for i, record := range records {
@@ -66,12 +71,12 @@ func main() {
 		}
 	}
 
-	if *shuffle {
-		shuffleQuestions(questions)
-	}
+	return questions
+}
 
+func quiz(questions []question) int {
 	scanner := bufio.NewScanner(os.Stdin)
-	countCorrect, countTotal := 0, len(records)
+	countCorrect := 0
 
 	fmt.Println("As you will be ready - press Enter to start...")
 	scanner.Scan()
@@ -102,5 +107,18 @@ func main() {
 	case <-doneCh:
 	}
 
-	fmt.Printf("Correct Answers is %d out of %d\n", countCorrect, countTotal)
+	return countCorrect
+}
+
+func main() {
+	records := newCsvReader(*filePath)
+	questions := getQuestions(records)
+
+	if *shuffle {
+		shuffleQuestions(questions)
+	}
+
+	countCorrect := quiz(questions)
+
+	fmt.Printf("Correct Answers is %d out of %d (%.0f%%)\n", countCorrect, len(questions), float32(countCorrect)/float32(len(questions))*100)
 }
