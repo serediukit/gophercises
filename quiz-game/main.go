@@ -13,11 +13,20 @@ import (
 var (
 	filePath = flag.String("filePath", "problems.csv", "The path to file where questions are containing")
 	limit    = flag.Int("limit", 30, "The time in second that you will have to complete the quiz")
+	shuffle  = flag.Bool("shuffle", false, "If true - the questions will appear in random order")
 )
 
-func main() {
-	flag.Parse()
+type question struct {
+	id       int
+	question string
+	answer   string
+}
 
+func init() {
+	flag.Parse()
+}
+
+func main() {
 	file, err := os.Open(*filePath)
 	if err != nil {
 		fmt.Println("Cannot read file:", err)
@@ -40,26 +49,35 @@ func main() {
 		return
 	}
 
+	questions := make([]question, len(records))
+	for i, record := range records {
+		questions[i] = question{
+			id:       i + 1,
+			question: record[0],
+			answer:   strings.ToLower(strings.TrimSpace(record[1])),
+		}
+	}
+
 	scanner := bufio.NewScanner(os.Stdin)
 	countCorrect, countTotal := 0, len(records)
+
+	fmt.Println("As you will be ready - press Enter to start...")
+	scanner.Scan()
 
 	timer := time.After(time.Duration(*limit) * time.Second)
 
 	doneCh := make(chan struct{})
 
 	go func() {
-		for i, record := range records {
-			fmt.Printf("Problem #%d: %s = ", i+1, record[0])
+		for i, q := range questions {
+			fmt.Printf("Problem #%d: %s = ", i+1, q.question)
 
 			scanner.Scan()
 			input := scanner.Text()
 			input = strings.TrimSpace(input)
 			input = strings.ToLower(input)
 
-			answer := strings.TrimSpace(record[1])
-			answer = strings.ToLower(answer)
-
-			if answer == input {
+			if q.answer == input {
 				countCorrect++
 			}
 		}
