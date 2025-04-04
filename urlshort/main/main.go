@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/serediukit/gophercises/tree/master/urlshort"
+	"urlshort"
+	// "github.com/serediukit/gophercises/urlshort"
 )
 
 func main() {
@@ -30,7 +31,11 @@ func main() {
 		panic(err)
 	}
 	fmt.Println("Starting the server on :8080")
-	http.ListenAndServe(":8080", yamlHandler)
+
+	err = http.ListenAndServe(":8080", yamlHandler)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func defaultMux() *http.ServeMux {
@@ -40,5 +45,8 @@ func defaultMux() *http.ServeMux {
 }
 
 func hello(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Hello, world!")
+	_, err := fmt.Fprintln(w, "Hello, world!")
+	if err != nil {
+		return
+	}
 }
