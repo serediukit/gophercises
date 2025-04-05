@@ -1,6 +1,7 @@
 package urlshort
 
 import (
+	"encoding/json"
 	"gopkg.in/yaml.v2"
 	"net/http"
 )
@@ -39,11 +40,11 @@ func MapHandler(pathsToUrls map[string]string, fallback http.Handler) http.Handl
 // See MapHandler to create a similar http.HandlerFunc via
 // a mapping of paths to urls.
 func YAMLHandler(yaml []byte, fallback http.Handler) (http.HandlerFunc, error) {
-	parsedYaml, err := parseYAML(yaml)
+	parsedYAML, err := parseYAML(yaml)
 	if err != nil {
 		return nil, err
 	}
-	pathMap := buildMap(parsedYaml)
+	pathMap := buildMap(parsedYAML)
 	return MapHandler(pathMap, fallback), nil
 }
 
@@ -55,10 +56,49 @@ func parseYAML(data []byte) (parsedYAML []map[string]string, err error) {
 	return parsedYAML, nil
 }
 
-func buildMap(parsedYaml []map[string]string) map[string]string {
+func buildMap(parsedYAML []map[string]string) map[string]string {
 	res := make(map[string]string)
-	for _, entry := range parsedYaml {
+	for _, entry := range parsedYAML {
 		res[entry["path"]] = entry["url"]
 	}
 	return res
+}
+
+//func JSONHandler(data []byte, fallback http.Handler) (http.HandlerFunc, error) {
+//	type Record struct {
+//		Path string `json:"path"`
+//		Url  string `json:"url"`
+//	}
+//	fmt.Println("+")
+//	var records []Record
+//	err := json.Unmarshal(data, &records)
+//	fmt.Println(string(data))
+//	if err != nil {
+//		return nil, err
+//	}
+//	fmt.Println()
+//
+//	pathMap := make(map[string]string)
+//	for _, record := range records {
+//		pathMap[record.Path] = record.Url
+//	}
+//
+//	return MapHandler(pathMap, fallback), nil
+//}
+
+func JSONHandler(json []byte, fallback http.Handler) (http.HandlerFunc, error) {
+	parsedJSON, err := parseJSON(json)
+	if err != nil {
+		return nil, err
+	}
+	pathMap := buildMap(parsedJSON)
+	return MapHandler(pathMap, fallback), nil
+}
+
+func parseJSON(data []byte) (parsedJSON []map[string]string, err error) {
+	err = json.Unmarshal(data, &parsedJSON)
+	if err != nil {
+		return nil, err
+	}
+	return parsedJSON, nil
 }

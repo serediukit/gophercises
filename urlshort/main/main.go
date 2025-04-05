@@ -48,9 +48,28 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	json := `
+[
+	{
+		"path": "/serediuk",
+		"url": "https://github.com/serediukit"
+	},
+	{	
+		"path": "/serediuk-go",
+		"url": "https://github.com/serediukit/gophercises"
+	}
+]
+`
+
+	jsonHandler, err := urlshort.JSONHandler([]byte(json), yamlHandler)
+	if err != nil {
+		panic(err)
+	}
+
 	fmt.Println("Starting the server on :8080")
 
-	err = http.ListenAndServe(":8080", yamlHandler)
+	err = http.ListenAndServe(":8080", jsonHandler)
 	if err != nil {
 		panic(err)
 	}
