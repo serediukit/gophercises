@@ -1,0 +1,4 @@
+- path: /urlshort
+  url: https://github.com/serediukit/gophercises/urlshort
+- path: /urlshort-repo
+  url: https://github.com/serediukit/gophercises/
