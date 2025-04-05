@@ -64,28 +64,6 @@ func buildMap(parsedYAML []map[string]string) map[string]string {
 	return res
 }
 
-//func JSONHandler(data []byte, fallback http.Handler) (http.HandlerFunc, error) {
-//	type Record struct {
-//		Path string `json:"path"`
-//		Url  string `json:"url"`
-//	}
-//	fmt.Println("+")
-//	var records []Record
-//	err := json.Unmarshal(data, &records)
-//	fmt.Println(string(data))
-//	if err != nil {
-//		return nil, err
-//	}
-//	fmt.Println()
-//
-//	pathMap := make(map[string]string)
-//	for _, record := range records {
-//		pathMap[record.Path] = record.Url
-//	}
-//
-//	return MapHandler(pathMap, fallback), nil
-//}
-
 func JSONHandler(json []byte, fallback http.Handler) (http.HandlerFunc, error) {
 	parsedJSON, err := parseJSON(json)
 	if err != nil {
