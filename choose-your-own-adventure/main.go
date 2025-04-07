@@ -11,7 +11,7 @@ import (
 
 func main() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", index)
+	mux.HandleFunc("/", redirectToIntro)
 
 	filepath := "res/gopher.json"
 	data := readFile(filepath)
@@ -37,11 +37,8 @@ func main() {
 	}
 }
 
-func index(w http.ResponseWriter, _ *http.Request) {
-	_, err := fmt.Fprintf(w, "Welcome to the home page!")
-	if err != nil {
-		panic(err)
-	}
+func redirectToIntro(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/intro", http.StatusFound)
 }
 
 func readFile(filename string) []byte {
