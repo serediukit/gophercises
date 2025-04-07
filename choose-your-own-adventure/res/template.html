@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ .Title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2em;
+            background-color: #f9f9f9;
+        }
+        .story {
+            margin-bottom: 1.5em;
+        }
+        .option {
+            margin: 0.5em 0;
+        }
+        .option a {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        .option a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<h1>{{ .Title }}</h1>
+
+{{ range .Story }}
+<p class="story">{{ . }}</p>
+{{ end }}
+
+{{ if .Options }}
+<h2>What do you want to do?</h2>
+<ul>
+    {{ range .Options }}
+    <li class="option">
+        <a href="/{{ .Arc }}">{{ .Text }}</a>
+    </li>
+    {{ end }}
+</ul>
+{{ end }}
+</body>
+</html>

@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"cyoa/decoder"
+	"cyoa/htmlPages"
 )
 
 func main() {
@@ -24,6 +25,10 @@ func main() {
 			panic(err)
 		}
 	})
+
+	for arcName, arc := range decoded {
+		mux.HandleFunc("/"+arcName, htmlPages.NewHandler(arc))
+	}
 
 	fmt.Println("Starting server on port 8080")
 	err = http.ListenAndServe(":8080", mux)
