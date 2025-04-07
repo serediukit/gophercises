@@ -6,11 +6,13 @@ import (
 	"net/http"
 	"os"
 
-	"urlshort"
-	// "github.com/serediukit/gophercises/urlshort"
+	"github.com/serediukit/gophercises/urlshort"
 )
 
-var yamlPath = flag.String("yaml", "", "Path to YAML file")
+var (
+	yamlPath = flag.String("yaml", "", "Path to YAML file")
+	jsonPath = flag.String("json", "", "Path to JSON file")
+)
 
 func init() {
 	flag.Parse()
@@ -19,48 +21,26 @@ func init() {
 func main() {
 	mux := defaultMux()
 
-	// Build the MapHandler using the mux as the fallback
-	pathsToUrls := map[string]string{
-		"/urlshort-godoc": "https://godoc.org/github.com/gophercises/urlshort",
-		"/yaml-godoc":     "https://godoc.org/gopkg.in/yaml.v2",
-	}
-	mapHandler := urlshort.MapHandler(pathsToUrls, mux)
-
-	// Build the YAMLHandler using the mapHandler as the
-	// fallback
-	var yaml string
 	var err error
 	if *yamlPath != "" {
 		yaml, err = readFileToString(*yamlPath)
 		if err != nil {
 			panic(err)
 		}
-	} else {
-		yaml = `
-- path: /urlshort
-  url: https://github.com/gophercises/urlshort
-- path: /urlshort-final
-  url: https://github.com/gophercises/urlshort/tree/solution
-`
 	}
+	if *jsonPath != "" {
+		json, err = readFileToString(*jsonPath)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	mapHandler := urlshort.MapHandler(pathsToUrls, mux)
 
 	yamlHandler, err := urlshort.YAMLHandler([]byte(yaml), mapHandler)
 	if err != nil {
 		panic(err)
 	}
-
-	json := `
-[
-	{
-		"path": "/serediuk",
-		"url": "https://github.com/serediukit"
-	},
-	{	
-		"path": "/serediuk-go",
-		"url": "https://github.com/serediukit/gophercises"
-	}
-]
-`
 
 	jsonHandler, err := urlshort.JSONHandler([]byte(json), yamlHandler)
 	if err != nil {

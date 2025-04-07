@@ -1,8 +1,6 @@
 package urlshort
 
 import (
-	"encoding/json"
-	"gopkg.in/yaml.v2"
 	"net/http"
 )
 
@@ -48,44 +46,6 @@ func YAMLHandler(yaml []byte, fallback http.Handler) (http.HandlerFunc, error) {
 	return MapHandler(pathMap, fallback), nil
 }
 
-func parseYAML(data []byte) (parsedYAML []map[string]string, err error) {
-	err = yaml.Unmarshal(data, &parsedYAML)
-	if err != nil {
-		return nil, err
-	}
-	return parsedYAML, nil
-}
-
-func buildMap(parsedYAML []map[string]string) map[string]string {
-	res := make(map[string]string)
-	for _, entry := range parsedYAML {
-		res[entry["path"]] = entry["url"]
-	}
-	return res
-}
-
-//func JSONHandler(data []byte, fallback http.Handler) (http.HandlerFunc, error) {
-//	type Record struct {
-//		Path string `json:"path"`
-//		Url  string `json:"url"`
-//	}
-//	fmt.Println("+")
-//	var records []Record
-//	err := json.Unmarshal(data, &records)
-//	fmt.Println(string(data))
-//	if err != nil {
-//		return nil, err
-//	}
-//	fmt.Println()
-//
-//	pathMap := make(map[string]string)
-//	for _, record := range records {
-//		pathMap[record.Path] = record.Url
-//	}
-//
-//	return MapHandler(pathMap, fallback), nil
-//}
-
 func JSONHandler(json []byte, fallback http.Handler) (http.HandlerFunc, error) {
 	parsedJSON, err := parseJSON(json)
 	if err != nil {
@@ -95,10 +55,6 @@ func JSONHandler(json []byte, fallback http.Handler) (http.HandlerFunc, error) {
 	return MapHandler(pathMap, fallback), nil
 }
 
-func parseJSON(data []byte) (parsedJSON []map[string]string, err error) {
-	err = json.Unmarshal(data, &parsedJSON)
-	if err != nil {
-		return nil, err
-	}
-	return parsedJSON, nil
+func BoltDBHandler(data []byte, fallback http.Handler) (http.HandlerFunc, error) {
+	return nil, nil
 }

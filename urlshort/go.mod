@@ -1,4 +1,4 @@
-module urlshort
+module github.com/serediukit/gophercises/urlshort
 
 go 1.24.0
 
