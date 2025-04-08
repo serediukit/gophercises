@@ -10,7 +10,7 @@ type Option struct {
 type Arc struct {
 	Title   string
 	Story   []string
-	Options []Option
+	Options []*Option
 }
 
 func (c *Arc) String() string {
