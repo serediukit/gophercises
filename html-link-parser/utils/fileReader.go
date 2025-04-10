@@ -1,9 +1,12 @@
 package utils
 
-import "os"
+import (
+	"io"
+	"os"
+)
 
-func ReadFileToByte(filename string) ([]byte, error) {
-	file, err := os.ReadFile("res/" + filename)
+func ReaderFromFile(filename string) (io.Reader, error) {
+	file, err := os.Open("res/" + filename)
 	if err != nil {
 		return nil, err
 	}

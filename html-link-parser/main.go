@@ -1,8 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"html-link-parser/utils"
+	"html-link-parser/parser"
 	"os"
 )
 
@@ -13,9 +12,5 @@ func main() {
 		path = os.Args[1]
 	}
 
-	res, err := utils.ReadFileToByte(path)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(string(res))
+	parser.Parse(path)
 }
