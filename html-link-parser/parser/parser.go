@@ -17,10 +17,8 @@ func Parse(path string) {
 	for {
 		tt := z.Next()
 		if tt == html.ErrorToken {
-			// ...
 			break
 		}
-		fmt.Println(z.Token().Data)
-		fmt.Println("-------------------------------")
+		fmt.Println(z.Token().Data, "|", z.Token().Attr)
 	}
 }
