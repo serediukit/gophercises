@@ -53,7 +53,7 @@ func findHrefDFS(resNodes *[]linkNode, node *html.Node) {
 func getAllText(node *html.Node) string {
 	texts := make([]string, 0)
 	for n := range node.ChildNodes() {
-		if n.Data == "i" {
+		if n.Data == "i" || n.Type == html.CommentNode {
 			continue
 		}
 		data := strings.TrimSpace(n.Data)
