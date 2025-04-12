@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"html-link-parser/parser"
 	"os"
 )
@@ -12,5 +13,9 @@ func main() {
 		path = os.Args[1]
 	}
 
-	parser.Parse(path)
+	links := parser.Parse(path)
+
+	for _, n := range *links {
+		fmt.Println(n)
+	}
 }

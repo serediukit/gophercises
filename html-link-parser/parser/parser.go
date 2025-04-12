@@ -9,26 +9,16 @@ import (
 	"strings"
 )
 
-func Parse(path string) {
+func Parse(path string) *[]linkNode {
 	reader, err := utils.ReaderFromFile(path)
 	if err != nil {
 		fmt.Println("Can't open file")
 		os.Exit(1)
 	}
-	//z := html.NewTokenizer(reader)
-	//for {
-	//	tt := z.Next()
-	//	if tt == html.ErrorToken {
-	//		break
-	//	}
-	//	fmt.Println(strings.TrimSpace(z.Token().Data))
-	//}
 	node, _ := html.Parse(reader)
 	resNodes := make([]linkNode, 0)
 	findHrefDFS(&resNodes, node)
-	for _, n := range resNodes {
-		fmt.Println(n)
-	}
+	return &resNodes
 }
 
 func findHrefDFS(resNodes *[]linkNode, node *html.Node) {
