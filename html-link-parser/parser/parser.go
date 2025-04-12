@@ -27,7 +27,7 @@ func Parse(path string) {
 	resNodes := make([]linkNode, 0)
 	findHrefDFS(&resNodes, node)
 	for _, n := range resNodes {
-		fmt.Printf("%#v\n", n)
+		fmt.Println(n)
 	}
 }
 
@@ -53,11 +53,14 @@ func findHrefDFS(resNodes *[]linkNode, node *html.Node) {
 func getAllText(node *html.Node) string {
 	texts := make([]string, 0)
 	for n := range node.ChildNodes() {
-		if n.FirstChild == nil {
-			texts = append(texts, n.Data)
-		} else {
-			texts = append(texts, getAllText(n))
+		if n.Data == "i" {
+			continue
 		}
+		data := strings.TrimSpace(n.Data)
+		if n.FirstChild != nil {
+			data = getAllText(n)
+		}
+		texts = append(texts, data)
 	}
-	return strings.Join(texts, " ")
+	return strings.TrimSpace(strings.Join(texts, " "))
 }
